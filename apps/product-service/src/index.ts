@@ -1,5 +1,7 @@
 import express,{Request,Response} from "express";
 import cors from "cors";
+import { clerkMiddleware, getAuth } from '@clerk/express'
+import { AuthenticateUser } from "../middlewares/authMiddleware.js";
 
 const app = express();
 
@@ -10,6 +12,8 @@ app.use(
   })
 );
 
+app.use(clerkMiddleware())
+
 app.get("/health",(req:Request,res:Response) => {
   res.json({
     status: "ok",
@@ -17,6 +21,10 @@ app.get("/health",(req:Request,res:Response) => {
     timestamp: Date.now()
   })
 });
+
+app.get("/test",AuthenticateUser,(req,res)=> {
+  res.json({message:"product service authenticated"})
+})
 
 app.listen(8000,() => {
   console.log("Product Service is running on : http://localhost:8000");
